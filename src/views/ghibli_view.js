@@ -11,6 +11,7 @@ GhibliView.prototype.bindEvents = function () {
   PubSub.subscribe('Ghibli:data-loaded', (event) => {
     // received API data now loading all of it
     this.ghiblis = event.detail;
+    // console.log(this.ghiblis);
     // method to render & display all of the API data
     this.render(this.ghiblis);
   });

@@ -93,7 +93,7 @@
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("const Ghibli = __webpack_require__(/*! ./models/ghibli.js */ \"./src/models/ghibli.js\");\n\n\ndocument.addEventListener('DOMContentLoaded', () => {\n\n  console.log('Loaded, homie!');\n\n  const ghibli = new Ghibli();\n  ghibli.getData();\n\n});\n\n\n//# sourceURL=webpack:///./src/app.js?");
+eval("const Ghibli = __webpack_require__(/*! ./models/ghibli.js */ \"./src/models/ghibli.js\");\nconst GhibliView = __webpack_require__(/*! ./views/ghibli_view.js */ \"./src/views/ghibli_view.js\");\n\n\ndocument.addEventListener('DOMContentLoaded', () => {\n\n  console.log('Loaded, homie!');\n\n  // selects the html container to hold all the data\n  const ghibliContainer = document.querySelector('#ghibli-container');\n\n  // receives and loads all API data ready to pass onto detailing\n  const ghibliView = new GhibliView(ghibliContainer);\n  ghibliView.bindEvents();\n\n  // gets data from API\n  const ghibli = new Ghibli();\n  ghibli.getData();\n\n});\n\n\n//# sourceURL=webpack:///./src/app.js?");
 
 /***/ }),
 
@@ -127,6 +127,28 @@ eval("const Request = function (url) {\n  this.url = url;\n}\n\nRequest.prototyp
 /***/ (function(module, exports, __webpack_require__) {
 
 eval("const PubSub = __webpack_require__(/*! ../helpers/pub_sub.js */ \"./src/helpers/pub_sub.js\");\nconst Request = __webpack_require__(/*! ../helpers/request.js */ \"./src/helpers/request.js\");\n\n\nconst Ghibli = function () {\n  this.ghiblis = [];\n}\n\nGhibli.prototype.getData = function () {\n  const url = 'https://ghibliapi.herokuapp.com/films';\n  const request = new Request(url);\n  request.get()\n    .then((data) => {\n      // console.log(data);\n      this.ghiblis = data;\n      // received data from API, now ready and publishing it to read elsewhere\n      PubSub.publish('Ghibli:data-loaded', this.ghiblis);\n    })\n    .catch((error) => {\n      console.error(error);\n    })\n};\n\n\n\nmodule.exports = Ghibli;\n\n\n//# sourceURL=webpack:///./src/models/ghibli.js?");
+
+/***/ }),
+
+/***/ "./src/views/detail_view.js":
+/*!**********************************!*\
+  !*** ./src/views/detail_view.js ***!
+  \**********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+eval("const PubSub = __webpack_require__(/*! ../helpers/pub_sub.js */ \"./src/helpers/pub_sub.js\");\n\n\n\n\nconst DetailView = function (container, ghibli) {\n  this.detailContainer = container;\n  this.ghibli = ghibli;\n};\n\nDetailView.prototype.render = function () {\n  // create h3 title\n  const title = document.createElement('h3');\n  // create UL container for list items\n  const listContainer = document.createElement('ul');\n  const director = document.createElement('li');\n  const producer = document.createElement('li');\n  title.textContent = this.ghibli.name;\n  // console.log(this.ghibli.director);\n  director.textContent = this.ghibli.director;\n  producer.textContent = this.ghibli.producer;\n\n  // adding list items to list container\n  listContainer.appendChild(director);\n  listContainer.appendChild(producer);\n\n  this.detailContainer.appendChild(title);\n  this.detailContainer.appendChild(listContainer);\n\n};\n\n\nmodule.exports = DetailView;\n\n\n//# sourceURL=webpack:///./src/views/detail_view.js?");
+
+/***/ }),
+
+/***/ "./src/views/ghibli_view.js":
+/*!**********************************!*\
+  !*** ./src/views/ghibli_view.js ***!
+  \**********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+eval("const PubSub = __webpack_require__(/*! ../helpers/pub_sub.js */ \"./src/helpers/pub_sub.js\");\nconst DetailView = __webpack_require__(/*! ./detail_view.js */ \"./src/views/detail_view.js\");\n\n\nconst GhibliView = function (container) {\n  this.container = container;\n};\n\n\nGhibliView.prototype.bindEvents = function () {\n  PubSub.subscribe('Ghibli:data-loaded', (event) => {\n    // received API data now loading all of it\n    this.ghiblis = event.detail;\n    // console.log(this.ghiblis);\n    // method to render & display all of the API data\n    this.render(this.ghiblis);\n  });\n};\n\nGhibliView.prototype.render = function (ghiblis) {\n  // from the API data get each element\n  ghiblis.forEach((ghibli) => {\n    // link to new view to deal with the individual details\n    const detailView = new DetailView(this.container, ghibli);\n    detailView.render();\n  });\n};\n\n\n\n\nmodule.exports = GhibliView;\n\n\n//# sourceURL=webpack:///./src/views/ghibli_view.js?");
 
 /***/ })
 
