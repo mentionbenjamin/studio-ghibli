@@ -1,6 +1,3 @@
-# studio-ghibli
-Application for viewing Studio Ghibli movies with the SG API
-
 # Weekend Homework: Pub/Sub Application with Requests
 
 ### Learning Objectives
