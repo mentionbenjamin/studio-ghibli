@@ -126,7 +126,7 @@ eval("const Request = function (url) {\n  this.url = url;\n}\n\nRequest.prototyp
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("const PubSub = __webpack_require__(/*! ../helpers/pub_sub.js */ \"./src/helpers/pub_sub.js\");\nconst Request = __webpack_require__(/*! ../helpers/request.js */ \"./src/helpers/request.js\");\n\n\nconst Ghibli = function () {\n  this.ghiblis = [];\n}\n\nGhibli.prototype.getData = function () {\n  const url = 'https://ghibliapi.herokuapp.com/films';\n  const request = new Request(url);\n  request.get()\n    .then((data) => {\n      console.log(data);\n      this.ghiblis = data;\n\n      PubSub.publish('Ghibli:data-loaded', this.ghiblis);\n    })\n    .catch((error) => {\n      console.error(error);\n    })\n};\n\n\n\nmodule.exports = Ghibli;\n\n\n//# sourceURL=webpack:///./src/models/ghibli.js?");
+eval("const PubSub = __webpack_require__(/*! ../helpers/pub_sub.js */ \"./src/helpers/pub_sub.js\");\nconst Request = __webpack_require__(/*! ../helpers/request.js */ \"./src/helpers/request.js\");\n\n\nconst Ghibli = function () {\n  this.ghiblis = [];\n}\n\nGhibli.prototype.getData = function () {\n  const url = 'https://ghibliapi.herokuapp.com/films';\n  const request = new Request(url);\n  request.get()\n    .then((data) => {\n      // console.log(data);\n      this.ghiblis = data;\n      // received data from API, now ready and publishing it to read elsewhere\n      PubSub.publish('Ghibli:data-loaded', this.ghiblis);\n    })\n    .catch((error) => {\n      console.error(error);\n    })\n};\n\n\n\nmodule.exports = Ghibli;\n\n\n//# sourceURL=webpack:///./src/models/ghibli.js?");
 
 /***/ })
 

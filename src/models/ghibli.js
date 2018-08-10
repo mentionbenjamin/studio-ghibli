@@ -11,9 +11,9 @@ Ghibli.prototype.getData = function () {
   const request = new Request(url);
   request.get()
     .then((data) => {
-      console.log(data);
+      // console.log(data);
       this.ghiblis = data;
-
+      // received data from API, now ready and publishing it to read elsewhere
       PubSub.publish('Ghibli:data-loaded', this.ghiblis);
     })
     .catch((error) => {
